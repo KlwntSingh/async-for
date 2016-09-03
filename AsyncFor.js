@@ -38,6 +38,10 @@
 			}
 		};
 		
+		if(count == counter){
+			cb(error);
+		}
+		
 		return fn;
 	};
 	
