@@ -1,6 +1,6 @@
-# asyncFor
+# for-io
 
-This packages makes async operation on every item in List more manageable and makes code look clean.
+for-io helps you perform async(io) operation on every item in List in more manageable fashion and also helps you keep code clean.
 
 
 
@@ -8,7 +8,7 @@ This packages makes async operation on every item in List more manageable and ma
 
 
 ```
-$ npm install asyncFor
+$ npm install for-io
 ```
 
 
@@ -18,7 +18,7 @@ It has only two functions which will make your life much easier. Both does the s
 ####    asyncFor
 Executes functions in sequential order and than final cb after all those functions have been executed.
 
-	var asyncFor = require("asyncFor").asyncFor;
+	var asyncFor = require("for-io").asyncFor;
     
     var person1 = {
       firstName : "bob",
@@ -63,7 +63,7 @@ asyncFor accepts three arguments
 ####  callbackCaller
 Returns fn function which after executing n number of times will execute the the callback function you wants to execute.
     
-   var cbCaller = require("asyncFor").callbackCaller;
+   var cbCaller = require("for-io").callbackCaller;
    
    var person1 = {
       firstName : "bob",
@@ -100,7 +100,7 @@ cbCaller will return function fn which needs to called on every item execution s
 Want to contribute? Great!
 
 Please leave pull request at github project here
-[asyncFor](https://github.com/KlwntSingh/async-for)
+[for-io](https://github.com/KlwntSingh/for-io)
 
 
 License

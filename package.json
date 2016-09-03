@@ -1,14 +1,14 @@
 {
-  "name": "async-for",
+  "name": "for-io",
   "version": "1.0.0",
-  "description": "This packages makes async operation on every item in \"for\" loop more manageable and makes code look clean.",
+  "description": "for-io helps you perform async(io) operation on every item in List in more manageable fashion and also helps you keep code clean.",
   "main": "AsyncFor.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KlwntSingh/async-for.git"
+    "url": "git+https://github.com/KlwntSingh/for-io.git"
   },
   "keywords": [
     "async",
@@ -20,7 +20,7 @@
   "author": "Kulwant Singh (KlwntSingh)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/KlwntSingh/async-for/issues"
+    "url": "https://github.com/KlwntSingh/for-io/issues"
   },
-  "homepage": "https://github.com/KlwntSingh/async-for#readme"
+  "homepage": "https://github.com/KlwntSingh/for-io#readme"
 }
