@@ -21,6 +21,8 @@
 				}
 				asyncFor(list, eachItemFn, cb, true, index);
 			});
+		}else{
+			throw new Error("first argument should be list and should have length greater than 0. ");
 		}
 	};
 	
