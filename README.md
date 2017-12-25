@@ -12,50 +12,107 @@ $ npm install for-io
 
 
 ## How it works
-It has only two functions which will make your life much easier. Both does the same thing in different way
+Package exposes two functions which will make your life much easier on handling list. Both does the same thing in different way i.e parallel and sequential way.
 
-####    asyncFor
-Executes functions in sequential order and than final cb after all those functions have been executed.
 
-	var asyncFor = require("for-io").asyncFor;
-    
-    var person1 = {
+####    syncFor
+Executes callback function on every item in sequential manner.
+
+    // importing package
+    const for-io = require("for-io")();
+
+    let person1 = {
       firstName : "bob",
       lastName : "backoff"
+    }
+    let person2 = {
+      firstName: "alice",
+      "lastName" : "backoff"
     }
 
     var personsList = [person1, person2 ....];
 
-    /* you want store list in databases but does not want bulk insert and 
-      also want to stop the whole operation if one of enty fails.
-	 */
+    /*
+    * REQUIREMENT:-
+    * 1. Calling third party API which accepts one person at one time.
+    * 2. Stop calling API when there is error with person.
+	  *
+    */
      
-    asyncFor(personList, function(item, index, next){
+    for-io.syncFor(personList, function(item, index, next){
       db.insert(person, function(err, rs){
         		next(err, rs);
-	  });
-    },function(err, rs){
-          cb(err, rs);
+	    });
+    },function(err){
+          // CODE WHEN OPERATION ON LIST FINISHES
     });
     
     
 ###### let me break down this for you
 
-asyncFor accepts three arguments
-* Array 
+syncFor function accepts three arguments
+* list of item
 * Function you want to execute on each item in array
 
-    This function give us three arguments
+    This function is called by package with three arguments
 
-    > **a.** value   
-    > **b.** index  
-    > **c.** next - Need to call this function with first argument as err and second as 
-                    data which is sent to final cb function.
+    > **a.** item   
+    > **b.** index of item 
+    > **c.** next - function when called notifies the library that  processing on current item is done.
 
-3. cb/callback function you want to execute when every item is traversed successfully or when something fails
+* cb/callback function you want to execute when list is traversed successfully.
+NOTE:- This will be  called instantaneously when error is encountered while processing list.
 
-   > Third argument is final callback function
-     will be called if next is called with err as first argument.
+<br/>
+
+####    asyncFor
+Executes callback function on every item in parallel.
+
+    // importing package
+    const for-io = require("for-io")();
+
+    let person1 = {
+      firstName : "bob",
+      lastName : "backoff"
+    }
+    let person2 = {
+      firstName: "alice",
+      "lastName" : "backoff"
+    }
+
+    var personsList = [person1, person2 ....];
+
+    /*
+    *
+    * REQUIREMENT
+    * 1. You want to publish messages in queue for each person in list. You will do this parallel.
+	  *
+    */
+     
+    for-io.asyncFor(personList, function(item, index, next){
+      db.insert(person, function(err, rs){
+        		next(err, rs);
+	    });
+    },function(err){
+          // CODE WHEN OPERATION ON LIST FINISHES
+    });
+    
+    
+###### let me break down this for you
+
+asyncFor function accepts three arguments
+* list of item
+* Function you want to execute on each item in array
+
+    This function is called by package with three arguments
+
+    > **a.** item   
+    > **b.** index of item 
+    > **c.** next - notifies library that processing on current item is done.
+
+* cb/callback function you want to execute when every item is traversed successfully.
+NOTE:- This will be called if there is error but after completion of list traverse operation.
+It will have error as parameter which will be list of object with index and actual error
 
 <br/>
 

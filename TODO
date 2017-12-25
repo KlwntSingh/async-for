@@ -1,0 +1,4 @@
+TODO
+
+1. asyncFor - advanced handling for errors for callback.
+2. when doing asyncFor, we rather than running cb for every element in parallel, there should be argument to define batch which will tell how many to run in parallel from list. Actually this will be hybrid approach for both the asyncFor available today.
