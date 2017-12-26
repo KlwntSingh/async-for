@@ -3,102 +3,96 @@
  * 
  * CreatedOn: Sep 3, 2016
  * 
- * UpdatedOn: May 4, 2017
+ * UpdatedOn: Dec 25, 2017
  * 
  */
 
 "use strict";
 module.exports = function(options = { logger : console }){
-	let logger = options.logger;
+	let logger = {
+		info: function(){
+			if(options.logger){
+				let args = arguments;
+				options.logger.info.apply(options, args);
+			}
+		}
+	};
 	return {
-			syncFor : function syncFor(list, eachItemFn, cb){
-				logger.info("Running for loop in sync on list");
-				let index = 0;
-				if(list && Array.isArray(list)){
-					var listLength = list.length;
-					if(listLength == 0){
-						throw new Error("Passed List should have length greater than 0");
-					}else{
-						let iterFn = function(err, data){
-							if(err){
-								logger.info(" Element at index " + index + " in list had errors while finishing processing");
-								return cb(err);
-							}
-							logger.info(" Element at index " + index + " in list finished processed ");
-							index++;
-							if(index == listLength){
-								logger.info(" All the elements got processed. Calling final callback ");				
-								return cb(null, data);
-							}
-							eachItemFn(list[index], index, iterFn);
+		syncFor : function syncFor(list, eachItemFn, cb){
+			logger.info("Running for loop in sync on list");
+			let index = 0;
+			if(list && Array.isArray(list)){
+				var listLength = list.length;
+				if(listLength == 0){
+					throw new Error("Passed List should have length greater than 0");
+				}else{
+					let iterFn = function(err){
+						if(err){
+							logger.info(" Element at index " + index + " in list had errors while finishing processing");
+							let errorObj = {index, message : err};
+							logger.info("Calling final callback");
+							return cb(errorObj);
+						}
+						logger.info(" Element at index " + index + " in list finished processed ");
+						index++;
+						if(index == listLength){
+							logger.info("All the elements got processed. Calling final callback ");				
+							return cb(null);
 						}
 						eachItemFn(list[index], index, iterFn);
 					}
-				}else{
-					throw new Error("first argument of syncFor should be list");
+					eachItemFn(list[index], index, iterFn);
 				}
-			},
-		
-		asyncFor : function asyncFor(list, eachItemFn, cb){
-				
-				var counter = 0;
-				
-				if(list && Array.isArray(list)){
-					if(list.length == 0){
-						throw new Error("Passed List should have length greater than 0");
-					}
-					let errorArray = [];
-					list.forEach(function(value, index){
-						eachItemFn(value, function(err, data){
-							if(err){
-								errorArray.push({index, error: err});
-							}
-							counter++;
-							if(counter == list.length){
-								if(errorArray.length > 0){
-									return cb(errorArray);
-								}else{
-									return cb();
-								}
-							}
-						});
-					});
-				}else{
-					throw new Error("first argument of asyncFor should be list");
-				}
-			},
-		
-		callbackCaller : function callbackCaller(count, cb){
-				
-				let counter = 0
-					,error = null
-					,rTurn = [];
-				
-				if(count == counter){
-					throw new Error("First argument of callbackCaller should be a number greater than 0");
-				}
-				
-				var fn = function(){
-					var args = arguments;
-					
-					// loop over arguments passed to callback of async opr
-					for(var innerIndex in args){
-						// actual value of argument at index
-						var val = args[innerIndex];
-						var arr = rTurn[innerIndex];
-						if(!arr){
-							arr = [];
-							rTurn[innerIndex] = arr;
-						}
-						arr.push({index : counter, data: val});
-					}
-					counter++;
-					if(count === counter){
-						return cb.apply(this, rTurn);
-					}
-				};
-				
-				return fn;
+			}else{
+				throw new Error("First argument of syncFor should be list");
 			}
+		},
+		asyncFor : function asyncFor(list, eachItemFn, cb){
+			logger.info("Running for loop in async on list");
+			let self = this;
+			let index = 0;
+			if(list && Array.isArray(list)){
+				if(list.length == 0){
+					throw new Error("Passed List should have length greater than 0");
+				}
+				let errorArray = [];
+				var fn = self.callbackCaller(list.length, cb)
+				list.forEach(function(value, index){
+					eachItemFn(value, index, fn);
+				});
+			}else{
+				throw new Error("First argument of asyncFor should be list");
+			}
+		},
+
+		callbackCaller : function callbackCaller(count, cb){
+			logger.info("CallbackCaller function called");
+
+			let index = 0;
+
+			if(count == index){
+				throw new Error("First argument of callbackCaller should be a number which is greater than 0");
+			}
+
+			let errorArray = [];		
+			var fn = function(err){
+				if(err){
+					logger.info(" CallbackCaller function called " + index + " time has error");
+					errorArray.push({index, message: err})
+				}else{
+					logger.info(" CallbackCaller function called " + index + " time ");
+				}
+				index++;
+				if(count === index){
+					logger.info("CallbackCaller callback function called ");
+					if(errorArray.length > 0){
+						cb(errorArray);
+					}else{
+						cb(null);
+					}
+				}
+			};
+			return fn;
+		}
 	}
 }

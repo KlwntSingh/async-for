@@ -1,8 +1,8 @@
 {
   "name": "for-io",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "description": "for-io helps you perform async(io) operation on every item in List in more manageable fashion and also helps you keep code clean.",
-  "main": "AsyncFor.js",
+  "main": "for-io.js",
   "scripts": {
     "test": "node_modules/.bin/mocha"
   },
